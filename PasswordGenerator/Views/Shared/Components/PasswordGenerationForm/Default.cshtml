@@ -1,0 +1,66 @@
+﻿@model PasswordGenerationFormViewModel
+
+@{
+    if(Model?.Person != null && string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        Model.Person.FirstName = "";
+        Model.Person.LastName = "";
+        Model.Person.Email = "";
+    }
+}
+
+<div class="div-password-generation-form">
+    @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger" role="alert">
+            @Model.ErrorMessage
+        </div>
+    }
+    @if (!string.IsNullOrWhiteSpace(Model.GeneratedPassword))
+    {
+        <div class="alert alert-success" role="alert">
+            Lösenord har genererats: @Model.GeneratedPassword
+        </div>
+    }
+
+<form asp-controller="Password" asp-action="GeneratePassword" method="post">
+    <div class="form-group">
+        <label class="mb-0" asp-for="@Model.Person.FirstName">Förnamn</label>
+        <input class="form-control focus-input" asp-for="@Model.Person.FirstName" />
+    </div>
+    <div class="form-group">
+        <label class="mb-0" asp-for="@Model.Person.LastName">Efternamn</label>
+        <input class="form-control" asp-for="@Model.Person.LastName" />
+    </div>
+    <div class="form-group">
+        <label class="mb-0" asp-for="@Model.Person.Email">Email</label>
+        <input class="form-control" asp-for="@Model.Person.Email" />
+    </div>
+
+    <div class="form-group">
+        <input type="radio" asp-for="@Model.Person.PersonType"
+               value="@PersonType.Student" data-person-type="student"
+               class="rb-person-type mr-1" />Student<br />
+        <input type="radio" asp-for="@Model.Person.PersonType"
+               value="@PersonType.Teacher" data-person-type="teacher"
+               class="rb-person-type mr-1" />Lärare<br />
+    </div>
+
+    @{
+        string visabilityClass = "";
+        if(Model.Person.PersonType == PersonType.Teacher)
+        {
+            visabilityClass = "d-none";
+        }
+    }
+    <div class="form-group student-info @visabilityClass">
+        <label asp-for="@Model.Person.Email" class="mr-1">Årskurs</label>
+        <select asp-for="@Model.Person.SchoolYear" asp-items="Model.ValidSchoolYears.Select(y =>
+            new SelectListItem { Value = y.ToString(), Text = y.ToString() })"></select>
+    </div>
+
+    <button class="btn btn-primary btn-generate-password" type="button">Generera lösenord</button>
+</form>
+</div>
+
+<script src="~/js/PasswordGenerationForm.js" asp-append-version="true" defer></script>

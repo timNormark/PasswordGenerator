@@ -1,0 +1,11 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Lösenordsgenerator</h1>
+</div>
+
+<div class="row mt-5 justify-content-center">
+    @await Component.InvokeAsync("PasswordGenerationForm")
+</div>
